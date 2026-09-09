@@ -8,22 +8,25 @@
         body { font-family: sans-serif; background-color: #f4f4f9; padding: 20px; }
         .container { max-width: 400px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         h1 { text-align: center; color: #333; margin-bottom: 5px; }
+        
         .description { text-align: center; color: #737373; font-weight: bold; margin-top: 0; margin-bottom: 20px; font-size: 1.1em; }
+        /* 新增：紅色警告標語的樣式 */
+        .warning-text { color: #d9534f; font-size: 0.85em; font-weight: normal; display: block; margin-top: 8px; line-height: 1.5; text-align: left; background: #fdf2f2; padding: 10px; border-radius: 4px; border-left: 4px solid #d9534f;}
         
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; font-weight: bold; }
         .required-star { color: red; }
         
-        input, select, textarea { 
-            width: 100%; 
-            padding: 10px; 
-            border: 1px solid #ccc; 
-            border-radius: 4px; 
-            box-sizing: border-box; 
-            font-size: 16px; 
-        }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
         
-        /* 預設按鈕樣式 (藍色：滿版送出訂單) */
+        /* 新增：同訂購人勾選框的樣式 */
+        .checkbox-group { display: flex; align-items: center; background-color: #f9f9f9; padding: 12px; border-radius: 4px; border: 1px solid #ddd; margin-bottom: 15px; }
+        .checkbox-group input { width: auto; margin-right: 10px; transform: scale(1.3); }
+        .checkbox-group label { margin-bottom: 0; cursor: pointer; color: #444; font-weight: normal; }
+        
+        /* 隱藏的收件人區塊 */
+        #recipientSection { display: none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #ccc; }
+        
         button { width: 100%; padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; }
         button:hover { background-color: #0056b3; }
         
@@ -33,16 +36,9 @@
         #successScreen h2 { color: #28a745; margin-bottom: 20px; }
         
         #submittedDataContainer { display: flex; justify-content: center; margin-bottom: 25px; }
-        #submittedData { text-align: left; color: #444; font-size: 1.1em; line-height: 1.8; background: #f9f9f9; padding: 15px 25px; border-radius: 8px; border: 1px solid #eee; }
+        #submittedData { text-align: left; color: #444; font-size: 1.05em; line-height: 1.8; background: #f9f9f9; padding: 15px 25px; border-radius: 8px; border: 1px solid #eee; width: 100%; }
         
-        /* 成功畫面的返回按鈕 (深灰底白字，取消滿版寬度，置中) */
-        .btn-gray { 
-            background-color: #555555; 
-            color: white; 
-            width: auto; 
-            padding: 10px 40px; 
-            display: inline-block;
-        }
+        .btn-gray { background-color: #555555; color: white; width: auto; padding: 10px 40px; display: inline-block; }
         .btn-gray:hover { background-color: #333333; }
     </style>
 </head>
@@ -50,13 +46,48 @@
 
 <div class="container">
     <h1>辣妹文旦團</h1>
-    <p class="description" id="formDesc">一盒十斤含運費900元</p>
+    <div class="description" id="formDesc">
+        一盒十斤含運費900元
+        <span class="warning-text">
+            ⚠️ 為方便物流作業，一個寄送地址請填寫一份訂單。多個地址請分次填寫。<br>
+            ⚠️ 訂單送出後若需修改，請直接重新填寫，並於備註註明「取消前單」。
+        </span>
+    </div>
     
     <form id="orderForm">
+        <!-- 訂購人資訊 -->
         <div class="form-group">
-            <label for="name">姓名 <span class="required-star">*</span></label>
-            <input type="text" id="name" name="name" required>
+            <label for="purchaserName">訂購人姓名 <span class="required-star">*</span></label>
+            <input type="text" id="purchaserName" name="purchaserName" required>
         </div>
+        <div class="form-group">
+            <label for="purchaserPhone">訂購人電話 <span class="required-star">*</span></label>
+            <input type="tel" id="purchaserPhone" name="purchaserPhone" pattern="[0-9]*" inputmode="numeric" required>
+        </div>
+
+        <!-- 同訂購人勾選框 -->
+        <div class="checkbox-group">
+            <input type="checkbox" id="sameAsPurchaser" checked>
+            <label for="sameAsPurchaser">收件人與訂購人相同</label>
+        </div>
+
+        <!-- 收件人資訊 (預設隱藏) -->
+        <div id="recipientSection">
+            <div class="form-group">
+                <label for="recipientName">收件人姓名 <span class="required-star">*</span></label>
+                <input type="text" id="recipientName" name="recipientName">
+            </div>
+            <div class="form-group">
+                <label for="recipientPhone">收件人電話 <span class="required-star">*</span></label>
+                <input type="tel" id="recipientPhone" name="recipientPhone" pattern="[0-9]*" inputmode="numeric">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="address">收件地址 <span class="required-star">*</span></label>
+            <input type="text" id="address" name="address" required>
+        </div>
+        
         <div class="form-group">
             <label for="quantity">數量 <span class="required-star">*</span></label>
             <select id="quantity" name="quantity" required>
@@ -66,18 +97,12 @@
                 <option value="10">10</option>
             </select>
         </div>
-        <div class="form-group">
-            <label for="address">地址 <span class="required-star">*</span></label>
-            <input type="text" id="address" name="address" required>
-        </div>
-        <div class="form-group">
-            <label for="phone">電話 <span class="required-star">*</span></label>
-            <input type="tel" id="phone" name="phone" pattern="[0-9]*" inputmode="numeric" required>
-        </div>
+        
         <div class="form-group">
             <label for="remarks">備註</label>
             <textarea id="remarks" name="remarks" rows="3" placeholder="如有其他需求請填寫於此..."></textarea>
         </div>
+        
         <button type="submit" id="submitBtn">送出訂單</button>
         <div id="statusMessage"></div>
     </form>
@@ -100,65 +125,95 @@
     const successScreen = document.getElementById('successScreen');
     const formDesc = document.getElementById('formDesc');
     const resetFormBtn = document.getElementById('resetFormBtn');
+    
+    // 切換收件人欄位顯示與隱藏
+    const sameAsPurchaserCheckbox = document.getElementById('sameAsPurchaser');
+    const recipientSection = document.getElementById('recipientSection');
+    const recipientNameInput = document.getElementById('recipientName');
+    const recipientPhoneInput = document.getElementById('recipientPhone');
+
+    sameAsPurchaserCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            recipientSection.style.display = 'none';
+        } else {
+            recipientSection.style.display = 'block';
+        }
+    });
 
     form.addEventListener('submit', e => {
         e.preventDefault(); 
 
-        const nameVal = document.getElementById('name').value.trim();
-        const qtyVal = document.getElementById('quantity').value;
-        const addressVal = document.getElementById('address').value.trim();
-        let phoneVal = document.getElementById('phone').value.trim();
-        const remarksVal = document.getElementById('remarks').value.trim(); // 取得備註
+        let purchaserNameVal = document.getElementById('purchaserName').value.trim();
+        let purchaserPhoneVal = document.getElementById('purchaserPhone').value.trim();
+        let addressVal = document.getElementById('address').value.trim();
+        let qtyVal = document.getElementById('quantity').value;
+        let remarksVal = document.getElementById('remarks').value.trim();
         
-        const amountVal = parseInt(qtyVal, 10) * 900;
+        let recipientNameVal = '';
+        let recipientPhoneVal = '';
 
-        if (!nameVal || !qtyVal || !addressVal || !phoneVal) {
-            alert("請確實填寫：姓名、數量、地址與電話！");
+        // 判斷是否勾選同訂購人
+        if (sameAsPurchaserCheckbox.checked) {
+            recipientNameVal = purchaserNameVal;
+            recipientPhoneVal = purchaserPhoneVal;
+        } else {
+            recipientNameVal = recipientNameInput.value.trim();
+            recipientPhoneVal = recipientPhoneInput.value.trim();
+            
+            if (!recipientNameVal || !recipientPhoneVal) {
+                alert("請填寫收件人姓名與電話！");
+                return;
+            }
+        }
+
+        if (!purchaserNameVal || !purchaserPhoneVal || !addressVal) {
+            alert("請確實填寫所有必填欄位！");
             return; 
         }
+
+        const amountVal = parseInt(qtyVal, 10) * 900;
 
         submitBtn.disabled = true;
         submitBtn.textContent = "傳送中...";
         statusMessage.style.color = "#737373";
         statusMessage.textContent = "資料處理中...";
 
-        // 複製一份表單資料
         let requestBody = new FormData(form);
         
-        // 在電話前面強制加上單引號，讓 Google Sheets 把它當作文字，避免 0 被吃掉
-        requestBody.set('phone', "'" + phoneVal);
+        // 將判斷好的收件人資料寫入 FormData
+        requestBody.set('recipientName', recipientNameVal);
+        // 電話前加單引號防掉 0
+        requestBody.set('purchaserPhone', "'" + purchaserPhoneVal);
+        requestBody.set('recipientPhone', "'" + recipientPhoneVal);
 
-        // 定義成功時要執行的動作
         const showSuccess = () => {
             form.style.display = 'none';
             formDesc.style.display = 'none';
             
-            // 組合要顯示的資料 (如果有備註，就加上去)
             let resultHTML = `
-                ${nameVal}<br>
-                ${qtyVal}盒 ${amountVal}元<br>
-                ${addressVal}<br>
-                ${phoneVal}
+                <b>訂購人：</b>${purchaserNameVal}<br>
+                <b>收件人：</b>${recipientNameVal}<br>
+                <b>寄送至：</b>${addressVal}<br>
+                <b>訂購：</b>${qtyVal}盒 ${amountVal}元
             `;
-            
             if (remarksVal !== '') {
-                // 將備註的換行符號取代為 <br> 以正確顯示
-                resultHTML += `<br>${remarksVal.replace(/\\n/g, '<br>')}`;
+                resultHTML += `<br><b>備註：</b>${remarksVal.replace(/\n/g, '<br>')}`;
             }
 
             document.getElementById('submittedData').innerHTML = resultHTML;
-
             successScreen.style.display = 'block';
+            
             form.reset(); 
+            // 表單重置後，把隱藏區塊收起來
+            recipientSection.style.display = 'none';
+            
             statusMessage.textContent = ""; 
             submitBtn.disabled = false;
             submitBtn.textContent = "送出訂單"; 
         };
 
-        // 追蹤是否已經切換畫面，避免重複執行
         let isSuccessShown = false;
 
-        // 設定 2.5 秒後直接視為成功，不讓使用者傻等
         const timeoutId = setTimeout(() => {
             if (!isSuccessShown) {
                 isSuccessShown = true;
@@ -166,7 +221,6 @@
             }
         }, 2500);
 
-        // 發送背景請求
         fetch(scriptURL, { method: 'POST', body: requestBody, mode: 'no-cors' })
             .then(() => {
                 if (!isSuccessShown) {
