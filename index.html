@@ -10,7 +10,6 @@
         h1 { text-align: center; color: #333; margin-bottom: 5px; }
         
         .description { text-align: center; color: #737373; font-weight: bold; margin-top: 0; margin-bottom: 20px; font-size: 1.1em; }
-        /* 新增：紅色警告標語的樣式 */
         .warning-text { color: #d9534f; font-size: 0.85em; font-weight: normal; display: block; margin-top: 8px; line-height: 1.5; text-align: left; background: #fdf2f2; padding: 10px; border-radius: 4px; border-left: 4px solid #d9534f;}
         
         .form-group { margin-bottom: 15px; }
@@ -19,12 +18,10 @@
         
         input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
         
-        /* 新增：同訂購人勾選框的樣式 */
         .checkbox-group { display: flex; align-items: center; background-color: #f9f9f9; padding: 12px; border-radius: 4px; border: 1px solid #ddd; margin-bottom: 15px; }
         .checkbox-group input { width: auto; margin-right: 10px; transform: scale(1.3); }
         .checkbox-group label { margin-bottom: 0; cursor: pointer; color: #444; font-weight: normal; }
         
-        /* 隱藏的收件人區塊 */
         #recipientSection { display: none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #ccc; }
         
         button { width: 100%; padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; }
@@ -32,81 +29,87 @@
         
         #statusMessage { text-align: center; margin-top: 15px; font-weight: bold; }
         
+        /* 成功畫面區塊 */
         #successScreen { display: none; text-align: center; padding: 20px 0; }
         #successScreen h2 { color: #28a745; margin-bottom: 20px; }
-        
         #submittedDataContainer { display: flex; justify-content: center; margin-bottom: 25px; }
         #submittedData { text-align: left; color: #444; font-size: 1.05em; line-height: 1.8; background: #f9f9f9; padding: 15px 25px; border-radius: 8px; border: 1px solid #eee; width: 100%; }
-        
         .btn-gray { background-color: #555555; color: white; width: auto; padding: 10px 40px; display: inline-block; }
         .btn-gray:hover { background-color: #333333; }
+        
+        /* 新增：結單畫面區塊 */
+        #closedScreen { display: none; text-align: center; padding: 40px 0; }
+        #closedScreen h2 { color: #d9534f; margin-bottom: 15px; }
+        #closedScreen p { color: #555; line-height: 1.6; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>辣妹文旦團</h1>
-    <div class="description" id="formDesc">
-        一盒十斤含運費900元
-        <span class="warning-text">
-            ⚠️ 為方便物流作業，一個寄送地址請填寫一份訂單。多個地址請分次填寫。<br>
-            ⚠️ 訂單送出後若需修改，請直接重新填寫，並於備註註明「取消前單」。
-        </span>
-    </div>
     
-    <form id="orderForm">
-        <!-- 訂購人資訊 -->
-        <div class="form-group">
-            <label for="purchaserName">訂購人姓名 <span class="required-star">*</span></label>
-            <input type="text" id="purchaserName" name="purchaserName" required>
+    <!-- 表單與說明區塊 -->
+    <div id="formSection">
+        <div class="description" id="formDesc">
+            一盒十斤含運費900元
+            <span class="warning-text">
+                ⚠️ 一個寄送地址請填寫一份訂單。多個地址請分次填寫。<br>
+                ⚠️ 訂單送出後若需修改，請重新填寫，並於備註註明「取消前單」。
+            </span>
         </div>
-        <div class="form-group">
-            <label for="purchaserPhone">訂購人電話 <span class="required-star">*</span></label>
-            <input type="tel" id="purchaserPhone" name="purchaserPhone" pattern="[0-9]*" inputmode="numeric" required>
-        </div>
-
-        <!-- 同訂購人勾選框 -->
-        <div class="checkbox-group">
-            <input type="checkbox" id="sameAsPurchaser" checked>
-            <label for="sameAsPurchaser">收件人與訂購人相同</label>
-        </div>
-
-        <!-- 收件人資訊 (預設隱藏) -->
-        <div id="recipientSection">
+        
+        <form id="orderForm">
             <div class="form-group">
-                <label for="recipientName">收件人姓名 <span class="required-star">*</span></label>
-                <input type="text" id="recipientName" name="recipientName">
+                <label for="purchaserName">訂購人姓名 <span class="required-star">*</span></label>
+                <input type="text" id="purchaserName" name="purchaserName" required>
             </div>
             <div class="form-group">
-                <label for="recipientPhone">收件人電話 <span class="required-star">*</span></label>
-                <input type="tel" id="recipientPhone" name="recipientPhone" pattern="[0-9]*" inputmode="numeric">
+                <label for="purchaserPhone">訂購人電話 <span class="required-star">*</span></label>
+                <input type="tel" id="purchaserPhone" name="purchaserPhone" pattern="[0-9]*" inputmode="numeric" required>
             </div>
-        </div>
 
-        <div class="form-group">
-            <label for="address">收件地址 <span class="required-star">*</span></label>
-            <input type="text" id="address" name="address" required>
-        </div>
-        
-        <div class="form-group">
-            <label for="quantity">數量 <span class="required-star">*</span></label>
-            <select id="quantity" name="quantity" required>
-                <option value="1">1</option><option value="2">2</option><option value="3">3</option>
-                <option value="4">4</option><option value="5">5</option><option value="6">6</option>
-                <option value="7">7</option><option value="8">8</option><option value="9">9</option>
-                <option value="10">10</option>
-            </select>
-        </div>
-        
-        <div class="form-group">
-            <label for="remarks">備註</label>
-            <textarea id="remarks" name="remarks" rows="3" placeholder="如有其他需求請填寫於此..."></textarea>
-        </div>
-        
-        <button type="submit" id="submitBtn">送出訂單</button>
-        <div id="statusMessage"></div>
-    </form>
+            <div class="checkbox-group">
+                <input type="checkbox" id="sameAsPurchaser" checked>
+                <label for="sameAsPurchaser">收件人與訂購人相同</label>
+            </div>
 
+            <div id="recipientSection">
+                <div class="form-group">
+                    <label for="recipientName">收件人姓名 <span class="required-star">*</span></label>
+                    <input type="text" id="recipientName" name="recipientName">
+                </div>
+                <div class="form-group">
+                    <label for="recipientPhone">收件人電話 <span class="required-star">*</span></label>
+                    <input type="tel" id="recipientPhone" name="recipientPhone" pattern="[0-9]*" inputmode="numeric">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="address">收件地址 <span class="required-star">*</span></label>
+                <input type="text" id="address" name="address" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="quantity">數量 <span class="required-star">*</span></label>
+                <select id="quantity" name="quantity" required>
+                    <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+                    <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+                    <option value="7">7</option><option value="8">8</option><option value="9">9</option>
+                    <option value="10">10</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="remarks">備註</label>
+                <textarea id="remarks" name="remarks" rows="3" placeholder="如有其他需求請填寫於此..."></textarea>
+            </div>
+            
+            <button type="submit" id="submitBtn">送出訂單</button>
+            <div id="statusMessage"></div>
+        </form>
+    </div>
+
+    <!-- 成功畫面區塊 -->
     <div id="successScreen">
         <h2>🎉 訂單已成功送出！</h2>
         <div id="submittedDataContainer">
@@ -114,19 +117,26 @@
         </div>
         <button id="resetFormBtn" class="btn-gray">再填寫一筆訂單</button>
     </div>
+    
+    <!-- 結單畫面區塊 -->
+    <div id="closedScreen">
+        <div style="font-size: 50px; margin-bottom: 10px;">🛑</div>
+        <h2>本次團購已結單</h2>
+        <p>感謝大家對「辣妹文旦團」的支持！<br>目前已截止訂購。</p>
+    </div>
 </div>
 
 <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyDKIG597zkFzv6mSjon6Sem1l8ZIhlwjX9blERNsNXs-_JXIueWTrJVH-eDFQ_r_zoyw/exec'; 
     
+    const formSection = document.getElementById('formSection');
     const form = document.getElementById('orderForm');
     const submitBtn = document.getElementById('submitBtn');
     const statusMessage = document.getElementById('statusMessage');
     const successScreen = document.getElementById('successScreen');
-    const formDesc = document.getElementById('formDesc');
+    const closedScreen = document.getElementById('closedScreen');
     const resetFormBtn = document.getElementById('resetFormBtn');
     
-    // 切換收件人欄位顯示與隱藏
     const sameAsPurchaserCheckbox = document.getElementById('sameAsPurchaser');
     const recipientSection = document.getElementById('recipientSection');
     const recipientNameInput = document.getElementById('recipientName');
@@ -152,14 +162,12 @@
         let recipientNameVal = '';
         let recipientPhoneVal = '';
 
-        // 判斷是否勾選同訂購人
         if (sameAsPurchaserCheckbox.checked) {
             recipientNameVal = purchaserNameVal;
             recipientPhoneVal = purchaserPhoneVal;
         } else {
             recipientNameVal = recipientNameInput.value.trim();
             recipientPhoneVal = recipientPhoneInput.value.trim();
-            
             if (!recipientNameVal || !recipientPhoneVal) {
                 alert("請填寫收件人姓名與電話！");
                 return;
@@ -171,79 +179,61 @@
             return; 
         }
 
-        const amountVal = parseInt(qtyVal, 10) * 900;
-
         submitBtn.disabled = true;
         submitBtn.textContent = "傳送中...";
         statusMessage.style.color = "#737373";
         statusMessage.textContent = "資料處理中...";
 
         let requestBody = new FormData(form);
-        
-        // 將判斷好的收件人資料寫入 FormData
         requestBody.set('recipientName', recipientNameVal);
-        // 電話前加單引號防掉 0
         requestBody.set('purchaserPhone', "'" + purchaserPhoneVal);
         requestBody.set('recipientPhone', "'" + recipientPhoneVal);
 
-        const showSuccess = () => {
-            form.style.display = 'none';
-            formDesc.style.display = 'none';
-            
-            let resultHTML = `
-                <b>訂購人：</b>${purchaserNameVal}<br>
-                <b>收件人：</b>${recipientNameVal}<br>
-                <b>寄送至：</b>${addressVal}<br>
-                <b>訂購：</b>${qtyVal}盒 ${amountVal}元
-            `;
-            if (remarksVal !== '') {
-                resultHTML += `<br><b>備註：</b>${remarksVal.replace(/\n/g, '<br>')}`;
-            }
-
-            document.getElementById('submittedData').innerHTML = resultHTML;
-            successScreen.style.display = 'block';
-            
-            form.reset(); 
-            // 表單重置後，把隱藏區塊收起來
-            recipientSection.style.display = 'none';
-            
-            statusMessage.textContent = ""; 
-            submitBtn.disabled = false;
-            submitBtn.textContent = "送出訂單"; 
-        };
-
-        let isSuccessShown = false;
-
-        const timeoutId = setTimeout(() => {
-            if (!isSuccessShown) {
-                isSuccessShown = true;
-                showSuccess();
-            }
-        }, 2500);
-
-        fetch(scriptURL, { method: 'POST', body: requestBody, mode: 'no-cors' })
-            .then(() => {
-                if (!isSuccessShown) {
-                    isSuccessShown = true;
-                    clearTimeout(timeoutId);
-                    showSuccess();
+        // 移除 mode: 'no-cors'，改用標準請求以便讀取 JSON 回應
+        fetch(scriptURL, { method: 'POST', body: requestBody })
+            .then(response => response.json())
+            .then(data => {
+                // 如果後端檢查開關發現已結單
+                if (data.result === "closed") {
+                    formSection.style.display = 'none';
+                    closedScreen.style.display = 'block';
+                    return; // 終止後續動作
                 }
+                
+                // 如果成功寫入
+                const amountVal = parseInt(qtyVal, 10) * 900;
+                formSection.style.display = 'none';
+                
+                let resultHTML = `
+                    <b>訂購人：</b>${purchaserNameVal}<br>
+                    <b>收件人：</b>${recipientNameVal}<br>
+                    <b>寄送至：</b>${addressVal}<br>
+                    <b>訂購：</b>${qtyVal}盒 ${amountVal}元
+                `;
+                if (remarksVal !== '') {
+                    resultHTML += `<br><b>備註：</b>${remarksVal.replace(/\n/g, '<br>')}`;
+                }
+
+                document.getElementById('submittedData').innerHTML = resultHTML;
+                successScreen.style.display = 'block';
+                
+                form.reset(); 
+                recipientSection.style.display = 'none';
+                statusMessage.textContent = ""; 
+                submitBtn.disabled = false;
+                submitBtn.textContent = "送出訂單"; 
             })
             .catch(error => {
-                if (!isSuccessShown) {
-                    clearTimeout(timeoutId);
-                    statusMessage.style.color = "red";
-                    statusMessage.textContent = "發生錯誤，請檢查網路連線。";
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = "送出訂單";
-                }
+                statusMessage.style.color = "red";
+                statusMessage.textContent = "發生錯誤，請檢查網路。";
+                submitBtn.disabled = false;
+                submitBtn.textContent = "送出訂單";
             });
     });
 
     resetFormBtn.addEventListener('click', () => {
         successScreen.style.display = 'none';
-        form.style.display = 'block';
-        formDesc.style.display = 'block';
+        formSection.style.display = 'block';
     });
 </script>
 
