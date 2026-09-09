@@ -16,10 +16,10 @@
         .required-star { color: red; }
         input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
         
-        /* 按鈕改為純灰色 */
-        button { width: 100%; padding: 10px; background-color: #737373; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; }
-        /* 按鈕滑鼠移過去的顏色 (深灰色) */
-        button:hover { background-color: #595959; }
+        /* 按鈕改為藍色 (#007bff) */
+        button { width: 100%; padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; }
+        /* 按鈕滑鼠移過去的顏色 (深藍色 #0056b3) */
+        button:hover { background-color: #0056b3; }
         
         #statusMessage { text-align: center; margin-top: 15px; font-weight: bold; }
         
@@ -27,7 +27,7 @@
         #successScreen { display: none; text-align: center; padding: 20px 0; }
         #successScreen h2 { color: #28a745; margin-bottom: 10px; }
         #successScreen p { color: #555; margin-bottom: 20px; }
-        /* 成功畫面的返回按鈕改為純灰色外框 */
+        /* 成功畫面的返回按鈕改為純灰色外框 (保持原樣) */
         .btn-outline { background-color: white; color: #737373; border: 2px solid #737373; }
         .btn-outline:hover { background-color: #f4f4f9; color: #595959; border-color: #595959; }
     </style>
@@ -41,7 +41,6 @@
     <!-- 表單區塊 -->
     <form id="orderForm">
         <div class="form-group">
-            <!-- 刪除了所有的冒號 -->
             <label for="name">姓名 <span class="required-star">*</span></label>
             <input type="text" id="name" name="name" required>
         </div>
