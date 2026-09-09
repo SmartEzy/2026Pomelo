@@ -23,7 +23,7 @@
             font-size: 16px; 
         }
         
-        /* 預設按鈕樣式 (藍色：送出訂單) */
+        /* 預設按鈕樣式 (藍色：滿版送出訂單) */
         button { width: 100%; padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; }
         button:hover { background-color: #0056b3; }
         
@@ -35,9 +35,15 @@
         #submittedDataContainer { display: flex; justify-content: center; margin-bottom: 25px; }
         #submittedData { text-align: left; color: #444; font-size: 1.1em; line-height: 1.8; background: #f9f9f9; padding: 15px 25px; border-radius: 8px; border: 1px solid #eee; }
         
-        /* 成功畫面的返回按鈕 (灰底白字) */
-        .btn-gray { background-color: #737373; color: white; }
-        .btn-gray:hover { background-color: #595959; }
+        /* 成功畫面的返回按鈕 (深灰底白字，取消滿版寬度，置中) */
+        .btn-gray { 
+            background-color: #555555; 
+            color: white; 
+            width: auto; /* 覆蓋原本的 100% 寬度 */
+            padding: 10px 40px; /* 增加左右內距讓按鈕更好看 */
+            display: inline-block;
+        }
+        .btn-gray:hover { background-color: #333333; }
     </style>
 </head>
 <body>
