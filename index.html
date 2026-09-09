@@ -8,24 +8,28 @@
         body { font-family: sans-serif; background-color: #f4f4f9; padding: 20px; }
         .container { max-width: 400px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         h1 { text-align: center; color: #333; margin-bottom: 5px; }
-        .description { text-align: center; color: #607d8b; font-weight: bold; margin-top: 0; margin-bottom: 20px; font-size: 1.1em; }
+        /* 說明文字改為純灰色 */
+        .description { text-align: center; color: #737373; font-weight: bold; margin-top: 0; margin-bottom: 20px; font-size: 1.1em; }
         
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; font-weight: bold; }
         .required-star { color: red; }
         input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
         
-        button { width: 100%; padding: 10px; background-color: #607d8b; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; }
-        button:hover { background-color: #455a64; }
+        /* 按鈕改為純灰色 */
+        button { width: 100%; padding: 10px; background-color: #737373; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; }
+        /* 按鈕滑鼠移過去的顏色 (深灰色) */
+        button:hover { background-color: #595959; }
         
         #statusMessage { text-align: center; margin-top: 15px; font-weight: bold; }
         
-        /* 成功畫面的樣式 (預設隱藏) */
+        /* 成功畫面的樣式 */
         #successScreen { display: none; text-align: center; padding: 20px 0; }
         #successScreen h2 { color: #28a745; margin-bottom: 10px; }
         #successScreen p { color: #555; margin-bottom: 20px; }
-        .btn-outline { background-color: white; color: #607d8b; border: 2px solid #607d8b; }
-        .btn-outline:hover { background-color: #f4f4f9; color: #455a64; }
+        /* 成功畫面的返回按鈕改為純灰色外框 */
+        .btn-outline { background-color: white; color: #737373; border: 2px solid #737373; }
+        .btn-outline:hover { background-color: #f4f4f9; color: #595959; border-color: #595959; }
     </style>
 </head>
 <body>
@@ -37,11 +41,12 @@
     <!-- 表單區塊 -->
     <form id="orderForm">
         <div class="form-group">
-            <label for="name">姓名 <span class="required-star">*</span>：</label>
+            <!-- 刪除了所有的冒號 -->
+            <label for="name">姓名 <span class="required-star">*</span></label>
             <input type="text" id="name" name="name" required>
         </div>
         <div class="form-group">
-            <label for="quantity">數量 <span class="required-star">*</span>：</label>
+            <label for="quantity">數量 <span class="required-star">*</span></label>
             <select id="quantity" name="quantity" required>
                 <option value="1">1</option><option value="2">2</option><option value="3">3</option>
                 <option value="4">4</option><option value="5">5</option><option value="6">6</option>
@@ -50,15 +55,15 @@
             </select>
         </div>
         <div class="form-group">
-            <label for="address">地址 <span class="required-star">*</span>：</label>
+            <label for="address">地址 <span class="required-star">*</span></label>
             <input type="text" id="address" name="address" required>
         </div>
         <div class="form-group">
-            <label for="phone">電話 <span class="required-star">*</span>：</label>
+            <label for="phone">電話 <span class="required-star">*</span></label>
             <input type="tel" id="phone" name="phone" pattern="[0-9]*" inputmode="numeric" required>
         </div>
         <div class="form-group">
-            <label for="remarks">備註：</label>
+            <label for="remarks">備註</label>
             <textarea id="remarks" name="remarks" rows="3" placeholder="如有其他需求請填寫於此..."></textarea>
         </div>
         <button type="submit" id="submitBtn">送出訂單</button>
@@ -74,7 +79,7 @@
 </div>
 
 <script>
-    // ！！！請將下方的網址替換成你的 Google Apps Script 部署網址 ！！！
+    // 已經幫你替換成你提供的最新部署網址
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyDKIG597zkFzv6mSjon6Sem1l8ZIhlwjX9blERNsNXs-_JXIueWTrJVH-eDFQ_r_zoyw/exec'; 
     
     const form = document.getElementById('orderForm');
@@ -99,7 +104,7 @@
 
         submitBtn.disabled = true;
         submitBtn.textContent = "傳送中...";
-        statusMessage.style.color = "#607d8b";
+        statusMessage.style.color = "#737373"; // 傳送中提示字也改為灰色
         statusMessage.textContent = "訂單送出中，請稍候...";
 
         let requestBody = new FormData(form);
