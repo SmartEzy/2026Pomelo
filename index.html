@@ -39,8 +39,8 @@
         .btn-gray { 
             background-color: #555555; 
             color: white; 
-            width: auto; /* 覆蓋原本的 100% 寬度 */
-            padding: 10px 40px; /* 增加左右內距讓按鈕更好看 */
+            width: auto; 
+            padding: 10px 40px; 
             display: inline-block;
         }
         .btn-gray:hover { background-color: #333333; }
@@ -108,6 +108,7 @@
         const qtyVal = document.getElementById('quantity').value;
         const addressVal = document.getElementById('address').value.trim();
         let phoneVal = document.getElementById('phone').value.trim();
+        const remarksVal = document.getElementById('remarks').value.trim(); // 取得備註
         
         const amountVal = parseInt(qtyVal, 10) * 900;
 
@@ -132,12 +133,20 @@
             form.style.display = 'none';
             formDesc.style.display = 'none';
             
-            document.getElementById('submittedData').innerHTML = `
+            // 組合要顯示的資料 (如果有備註，就加上去)
+            let resultHTML = `
                 ${nameVal}<br>
                 ${qtyVal}盒 ${amountVal}元<br>
                 ${addressVal}<br>
                 ${phoneVal}
             `;
+            
+            if (remarksVal !== '') {
+                // 將備註的換行符號取代為 <br> 以正確顯示
+                resultHTML += `<br>${remarksVal.replace(/\\n/g, '<br>')}`;
+            }
+
+            document.getElementById('submittedData').innerHTML = resultHTML;
 
             successScreen.style.display = 'block';
             form.reset(); 
@@ -167,7 +176,6 @@
                 }
             })
             .catch(error => {
-                // 如果 fetch 真的失敗了，且 timeout 還沒觸發
                 if (!isSuccessShown) {
                     clearTimeout(timeoutId);
                     statusMessage.style.color = "red";
