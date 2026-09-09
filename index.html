@@ -23,6 +23,7 @@
             font-size: 16px; 
         }
         
+        /* 預設按鈕樣式 (藍色：送出訂單) */
         button { width: 100%; padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; }
         button:hover { background-color: #0056b3; }
         
@@ -34,8 +35,9 @@
         #submittedDataContainer { display: flex; justify-content: center; margin-bottom: 25px; }
         #submittedData { text-align: left; color: #444; font-size: 1.1em; line-height: 1.8; background: #f9f9f9; padding: 15px 25px; border-radius: 8px; border: 1px solid #eee; }
         
-        .btn-outline { background-color: white; color: #737373; border: 2px solid #737373; }
-        .btn-outline:hover { background-color: #f4f4f9; color: #595959; border-color: #595959; }
+        /* 成功畫面的返回按鈕 (灰底白字) */
+        .btn-gray { background-color: #737373; color: white; }
+        .btn-gray:hover { background-color: #595959; }
     </style>
 </head>
 <body>
@@ -79,7 +81,7 @@
         <div id="submittedDataContainer">
             <div id="submittedData"></div>
         </div>
-        <button id="resetFormBtn" class="btn-outline">再填寫一筆訂單</button>
+        <button id="resetFormBtn" class="btn-gray">再填寫一筆訂單</button>
     </div>
 </div>
 
@@ -116,7 +118,6 @@
         // 複製一份表單資料
         let requestBody = new FormData(form);
         
-        // 【修正 1：保留電話的 0】
         // 在電話前面強制加上單引號，讓 Google Sheets 把它當作文字，避免 0 被吃掉
         requestBody.set('phone', "'" + phoneVal);
 
@@ -142,7 +143,6 @@
         // 追蹤是否已經切換畫面，避免重複執行
         let isSuccessShown = false;
 
-        // 【修正 2：加入逾時機制解決卡頓】
         // 設定 2.5 秒後直接視為成功，不讓使用者傻等
         const timeoutId = setTimeout(() => {
             if (!isSuccessShown) {
