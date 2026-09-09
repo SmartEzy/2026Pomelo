@@ -28,11 +28,9 @@
         
         #statusMessage { text-align: center; margin-top: 15px; font-weight: bold; }
         
-        /* 成功畫面的樣式 */
         #successScreen { display: none; text-align: center; padding: 20px 0; }
         #successScreen h2 { color: #28a745; margin-bottom: 20px; }
         
-        /* 回填資料區塊：整體置中，文字靠左 */
         #submittedDataContainer { display: flex; justify-content: center; margin-bottom: 25px; }
         #submittedData { text-align: left; color: #444; font-size: 1.1em; line-height: 1.8; background: #f9f9f9; padding: 15px 25px; border-radius: 8px; border: 1px solid #eee; }
         
@@ -46,7 +44,6 @@
     <h1>辣妹文旦團</h1>
     <p class="description" id="formDesc">一盒十斤含運費900元</p>
     
-    <!-- 表單區塊 -->
     <form id="orderForm">
         <div class="form-group">
             <label for="name">姓名 <span class="required-star">*</span></label>
@@ -77,15 +74,11 @@
         <div id="statusMessage"></div>
     </form>
 
-    <!-- 成功畫面區塊 -->
     <div id="successScreen">
         <h2>🎉 訂單已成功送出！</h2>
-        
-        <!-- 回填資料區塊 -->
         <div id="submittedDataContainer">
             <div id="submittedData"></div>
         </div>
-        
         <button id="resetFormBtn" class="btn-outline">再填寫一筆訂單</button>
     </div>
 </div>
@@ -106,7 +99,7 @@
         const nameVal = document.getElementById('name').value.trim();
         const qtyVal = document.getElementById('quantity').value;
         const addressVal = document.getElementById('address').value.trim();
-        const phoneVal = document.getElementById('phone').value.trim();
+        let phoneVal = document.getElementById('phone').value.trim();
         
         const amountVal = parseInt(qtyVal, 10) * 900;
 
@@ -118,36 +111,64 @@
         submitBtn.disabled = true;
         submitBtn.textContent = "傳送中...";
         statusMessage.style.color = "#737373";
-        statusMessage.textContent = "資料寫入中，請稍候 2~3 秒..."; // 讓填寫者有心理準備
+        statusMessage.textContent = "資料處理中...";
 
+        // 複製一份表單資料
         let requestBody = new FormData(form);
+        
+        // 【修正 1：保留電話的 0】
+        // 在電話前面強制加上單引號，讓 Google Sheets 把它當作文字，避免 0 被吃掉
+        requestBody.set('phone', "'" + phoneVal);
 
+        // 定義成功時要執行的動作
+        const showSuccess = () => {
+            form.style.display = 'none';
+            formDesc.style.display = 'none';
+            
+            document.getElementById('submittedData').innerHTML = `
+                ${nameVal}<br>
+                ${qtyVal}盒 ${amountVal}元<br>
+                ${addressVal}<br>
+                ${phoneVal}
+            `;
+
+            successScreen.style.display = 'block';
+            form.reset(); 
+            statusMessage.textContent = ""; 
+            submitBtn.disabled = false;
+            submitBtn.textContent = "送出訂單"; 
+        };
+
+        // 追蹤是否已經切換畫面，避免重複執行
+        let isSuccessShown = false;
+
+        // 【修正 2：加入逾時機制解決卡頓】
+        // 設定 2.5 秒後直接視為成功，不讓使用者傻等
+        const timeoutId = setTimeout(() => {
+            if (!isSuccessShown) {
+                isSuccessShown = true;
+                showSuccess();
+            }
+        }, 2500);
+
+        // 發送背景請求
         fetch(scriptURL, { method: 'POST', body: requestBody, mode: 'no-cors' })
             .then(() => {
-                form.style.display = 'none';
-                formDesc.style.display = 'none';
-                
-                // 組合顯示文字，數量與金額合併同行
-                document.getElementById('submittedData').innerHTML = `
-                    ${nameVal}<br>
-                    ${qtyVal}盒 ${amountVal}元<br>
-                    ${addressVal}<br>
-                    ${phoneVal}
-                `;
-
-                successScreen.style.display = 'block';
-                
-                form.reset(); 
-                statusMessage.textContent = ""; 
-                submitBtn.disabled = false;
-                submitBtn.textContent = "送出訂單"; 
+                if (!isSuccessShown) {
+                    isSuccessShown = true;
+                    clearTimeout(timeoutId);
+                    showSuccess();
+                }
             })
             .catch(error => {
-                statusMessage.style.color = "red";
-                statusMessage.textContent = "發生錯誤，請稍後再試。";
-                submitBtn.disabled = false;
-                submitBtn.textContent = "送出訂單";
-                console.error('Error!', error.message);
+                // 如果 fetch 真的失敗了，且 timeout 還沒觸發
+                if (!isSuccessShown) {
+                    clearTimeout(timeoutId);
+                    statusMessage.style.color = "red";
+                    statusMessage.textContent = "發生錯誤，請檢查網路連線。";
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = "送出訂單";
+                }
             });
     });
 
