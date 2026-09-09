@@ -8,14 +8,21 @@
         body { font-family: sans-serif; background-color: #f4f4f9; padding: 20px; }
         .container { max-width: 400px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         h1 { text-align: center; color: #333; margin-bottom: 5px; }
-        /* 新增商品說明的樣式 */
-        .description { text-align: center; color: #d9534f; font-weight: bold; margin-top: 0; margin-bottom: 20px; font-size: 1.1em; }
+        
+        /* 商品說明改為灰藍色 */
+        .description { text-align: center; color: #607d8b; font-weight: bold; margin-top: 0; margin-bottom: 20px; font-size: 1.1em; }
         
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .required-star { color: red; } /* 必填紅星號 */
+        
         input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        button { width: 100%; padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; }
-        button:hover { background-color: #218838; }
+        
+        /* 按鈕改為灰藍色 */
+        button { width: 100%; padding: 10px; background-color: #607d8b; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; }
+        /* 滑鼠移過去的顏色稍微加深 */
+        button:hover { background-color: #455a64; } 
+        
         #statusMessage { text-align: center; margin-top: 15px; font-weight: bold; }
     </style>
 </head>
@@ -23,19 +30,18 @@
 
 <div class="container">
     <h1>辣妹文旦團</h1>
-    <!-- 在這裡新增了商品說明 -->
     <p class="description">一盒十斤含運費900元</p>
     
     <form id="orderForm">
         <!-- 姓名 -->
         <div class="form-group">
-            <label for="name">姓名：</label>
+            <label for="name">姓名 <span class="required-star">*</span>：</label>
             <input type="text" id="name" name="name" required>
         </div>
 
         <!-- 數量 (下拉選單 1-10) -->
         <div class="form-group">
-            <label for="quantity">數量：</label>
+            <label for="quantity">數量 <span class="required-star">*</span>：</label>
             <select id="quantity" name="quantity" required>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -52,40 +58,54 @@
 
         <!-- 地址 -->
         <div class="form-group">
-            <label for="address">地址：</label>
+            <label for="address">地址 <span class="required-star">*</span>：</label>
             <input type="text" id="address" name="address" required>
         </div>
 
         <!-- 電話 (預設數字鍵盤) -->
         <div class="form-group">
-            <label for="phone">電話：</label>
+            <label for="phone">電話 <span class="required-star">*</span>：</label>
             <input type="tel" id="phone" name="phone" pattern="[0-9]*" inputmode="numeric" required>
         </div>
 
-        <!-- 備註 -->
+        <!-- 備註 (非必填) -->
         <div class="form-group">
             <label for="remarks">備註：</label>
-            <textarea id="remarks" name="remarks" rows="3"></textarea>
+            <textarea id="remarks" name="remarks" rows="3" placeholder="如有其他需求請填寫於此..."></textarea>
         </div>
 
-        <button type="submit" id="submitBtn">送出訂購</button>
+        <button type="submit" id="submitBtn">送出訂單</button>
     </form>
     <div id="statusMessage"></div>
 </div>
 
 <script>
     // ！！！請將下方的網址替換成你的 Google Apps Script 部署網址 ！！！
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbyDKIG597zkFzv6mSjon6Sem1l8ZIhlwjX9blERNsNXs-_JXIueWTrJVH-eDFQ_r_zoyw/exec'; 
+    const scriptURL = '你的_WEB_APP_URL'; 
     
     const form = document.getElementById('orderForm');
     const submitBtn = document.getElementById('submitBtn');
     const statusMessage = document.getElementById('statusMessage');
 
     form.addEventListener('submit', e => {
-        e.preventDefault(); 
+        e.preventDefault(); // 防止預設的表單跳轉
+
+        // 雙重檢查：確認前四項必填欄位是否有值
+        const nameVal = document.getElementById('name').value.trim();
+        const qtyVal = document.getElementById('quantity').value;
+        const addressVal = document.getElementById('address').value.trim();
+        const phoneVal = document.getElementById('phone').value.trim();
+
+        if (!nameVal || !qtyVal || !addressVal || !phoneVal) {
+            alert("請確實填寫：姓名、數量、地址與電話！");
+            return; // 終止送出程式碼
+        }
+
+        // 鎖定按鈕避免重複點擊
         submitBtn.disabled = true;
-        statusMessage.style.color = "blue";
-        statusMessage.textContent = "表單送出中，請稍候...";
+        submitBtn.textContent = "傳送中...";
+        statusMessage.style.color = "#607d8b";
+        statusMessage.textContent = "訂單送出中，請稍候...";
 
         let requestBody = new FormData(form);
 
@@ -93,13 +113,15 @@
             .then(response => {
                 statusMessage.style.color = "green";
                 statusMessage.textContent = "訂單已成功送出！";
-                form.reset(); 
+                form.reset(); // 清空表單
                 submitBtn.disabled = false;
+                submitBtn.textContent = "送出訂單"; // 恢復按鈕文字
             })
             .catch(error => {
                 statusMessage.style.color = "red";
                 statusMessage.textContent = "發生錯誤，請稍後再試。";
                 submitBtn.disabled = false;
+                submitBtn.textContent = "送出訂單";
                 console.error('Error!', error.message);
             });
     });
